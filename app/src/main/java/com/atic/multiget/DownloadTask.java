@@ -10,12 +10,13 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 
 /**
  * Created by If Chan on 2017/10/3.
  */
 
-public class DownloadTask extends AsyncTask<String,Integer,Integer> {
+public class DownloadTask extends AsyncTask<String,Double,Integer> {
 
     //private Handler handler=new Handler();
 
@@ -27,7 +28,7 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     private DownloadListener listener;
     private boolean isCanceled=false;
     private boolean isPaused=false;
-    private int lastProgress;
+    private double lastProgress;
 
     public DownloadTask(DownloadListener listener){
         this.listener=listener;
@@ -61,6 +62,8 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
             byte[] b=new byte[1024];
             int total=0;
             int len;
+            long time1=new Date().getTime();
+            long time2;
             while((len=is.read(b))!=-1){
                 if(isCanceled){
                     return TYPE_CANCELED;
@@ -71,8 +74,9 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                     total+=len;
                 }
                 savedFile.write(b,0,len);
-                int progress=(int)((total+downloadedLength)*100/contentLength);
-                publishProgress(progress);
+                double progress=(int)((total+downloadedLength)*100/contentLength);
+                time2=new Date().getTime();
+                publishProgress(progress,(double)(len/(time2-time1)));
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -93,10 +97,10 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     }
 
     @Override
-    protected void onProgressUpdate(Integer... values) {
-        int progress=values[0];
+    protected void onProgressUpdate(Double... values) {
+        double progress=values[0];
         if(progress>lastProgress){
-            listener.onProgress(progress);
+            listener.onProgress(progress,values[1]);
             lastProgress=progress;
         }
     }
