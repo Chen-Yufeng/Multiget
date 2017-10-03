@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onProgress(int progress) {
             progressBar.setProgress(progress);
-            text.setText("已完成："+progress*100+"%");
+            text.setText("已完成："+progress+"%");
         }
 
         @Override
