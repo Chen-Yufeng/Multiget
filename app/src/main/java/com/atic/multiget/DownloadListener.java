@@ -1,5 +1,6 @@
 package com.atic.multiget;
 
+
 public interface DownloadListener {
     void onProgress (int progress);
     void onSuccess ();
