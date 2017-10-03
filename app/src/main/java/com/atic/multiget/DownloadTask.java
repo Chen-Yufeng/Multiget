@@ -17,10 +17,12 @@ import java.net.URLConnection;
 
 public class DownloadTask extends AsyncTask<String,Integer,Integer> {
 
+    //private Handler handler=new Handler();
+
     public static final int TYPE_SUCCESS =0;
     public static final int TYPE_FAILED=1;
-    public static final int TYPE_PAUSED=3;
-    public static final int TYPE_CANCELED=4;
+    public static final int TYPE_PAUSED=2;
+    public static final int TYPE_CANCELED=3;
 
     private DownloadListener listener;
     private boolean isCanceled=false;

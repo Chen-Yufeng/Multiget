@@ -2,20 +2,16 @@ package com.atic.multiget;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private ProgressBar progressBar=(ProgressBar)findViewById(R.id.progressBar);
-    private Button start=(Button)findViewById(R.id.button_start);
-    private Button stop=(Button)findViewById(R.id.button_stop);
-    private Button cancel=(Button)findViewById(R.id.button_cancel);
-    private TextView text=(TextView)findViewById(R.id.text);
 
-    private DownloadTask downloadTask=new DownloadTask(downloadListener);
-
+    EditText url;
     private DownloadListener downloadListener=new DownloadListener() {
         @Override
         public void onProgress(int progress) {
@@ -42,11 +38,42 @@ public class MainActivity extends AppCompatActivity {
         public void onCanceled() {
             text.setText("取消下载");
         }
+    };
+    private DownloadTask downloadTask;
+    ProgressBar progressBar;
+    TextView text;
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.button_start:
+                downloadTask=new DownloadTask(downloadListener);
+                downloadTask.execute(url.getText().toString().trim());
+                break;
+            case R.id.button_stop:
+                if(downloadTask!=null)
+                    downloadTask.pauseDownload();
+                break;
+            case R.id.button_cancel:
+                if(downloadTask!=null) {
+                    downloadTask.cancelDownload();
+                    //还要删除文件
+                }
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar);
+        Button start=(Button)findViewById(R.id.button_start);
+        Button stop=(Button)findViewById(R.id.button_stop);
+        Button cancel=(Button)findViewById(R.id.button_cancel);
+        text=(TextView)findViewById(R.id.text);
+        url=(EditText)findViewById(R.id.edit_text_url);
+        start.setOnClickListener(this);
+        stop.setOnClickListener(this);
+        cancel.setOnClickListener(this);
     }
 }
